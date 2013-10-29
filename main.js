@@ -1,78 +1,59 @@
 (function($) {
 
-	var data = {
-		  "type": "FeatureCollection",
-		  "generator": "overpass-turbo",
-		  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
-		  "timestamp": "2013-10-29T18:01:02Z",
-		  "features": [
-		    {
-		      "type": "Feature",
-		      "id": "node/339680757",
-		      "properties": {
-		        "@id": "node/339680757",
-		        "amenity": "bicycle_rental",
-		        "name": "Metro Barra Funda"
-		      },
-		      "geometry": {
-		        "type": "Point",
-		        "coordinates": [
-		          -46.6669239,
-		          -23.526324
-		        ]
-		      }
-		    },
-		    {
-		      "type": "Feature",
-		      "id": "node/339682304",
-		      "properties": {
-		        "@id": "node/339682304",
-		        "amenity": "bicycle_rental"
-		      },
-		      "geometry": {
-		        "type": "Point",
-		        "coordinates": [
-		          -46.6554162,
-		          -23.5342968
-		        ]
-		      }
-		    },
-		    {
-		      "type": "Feature",
-		      "id": "node/462747754",
-		      "properties": {
-		        "@id": "node/462747754",
-		        "amenity": "bicycle_rental"
-		      },
-		      "geometry": {
-		        "type": "Point",
-		        "coordinates": [
-		          -46.5648631,
-		          -23.5389513
-		        ]
-		      }
-		    },
-		    {
-		      "type": "Feature",
-		      "id": "node/1731971676",
-		      "properties": {
-		        "@id": "node/1731971676",
-		        "amenity": "bicycle_rental",
-		        "name": "Pedalusp"
-		      },
-		      "geometry": {
-		        "type": "Point",
-		        "coordinates": [
-		          -46.7132329,
-		          -23.5642105
-		        ]
-		      }
-		    }
-		  ]
+	var sources = [
+		{
+			'name': 'São Paulo',
+			'bounds': {
+				'north': -23.3569984436035,
+				'south': -24.0070018768311,
+				'west': -46.826000213623,
+				'east': -46.3649978637695
+			}
+		},
+		{
+			'name': 'Porto Alegre',
+			'bounds': {
+				'north': -29.9306144714355,
+				'south': -30.2694511413574,
+				'west': -51.3032264709473,
+				'east': -51.0119972229004
+			}
+		},
+		{
+			'name': 'Belo Horizonte',
+			'bounds': {
+				'north': -19.7769985198975,
+				'south': -20.0590000152588,
+				'west': -44.0613059997559,
+				'east': -43.8569984436035
+			}
 		}
+	];
+
+	var nodes = [
+		'"amenity"="bicycle_parking"',
+		'"amenity"="bicycle_rental"',
+		'"shop"="bicycle"'
+	];
+
+	function getUrl(bounds) {
+
+		var boundsQuery = '(' + bounds.south + ',' + bounds.west + ',' + bounds.north + ',' + bounds.east + ')';
+
+		var query = '';
+
+		$.each(nodes, function(i, node) {
+			query += 'node[' + node + ']' + boundsQuery + ';';
+		});
+
+		query = encodeURIComponent('[out:json];(' + query + ');out body;>;out skel;');
+
+		return 'http://overpass-api.de/api/interpreter?data=' + query;
+
+	}
 
 	var config = {
-		dataSource: 'http://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%3B%28node%5B%22amenity%22%3D%22bicycle_parking%22%5D%28-24%2E122941926913096%2C-47%2E05169677734375%2C-23%2E202223033350386%2C-45%2E968170166015625%29%3Bnode%5B%22shop%22%3D%22bicycle%22%5D%28-24%2E122941926913096%2C-47%2E05169677734375%2C-23%2E202223033350386%2C-45%2E968170166015625%29%3Bnode%5B%22amenity%22%3D%22bicycle_rental%22%5D%28-24%2E122941926913096%2C-47%2E05169677734375%2C-23%2E202223033350386%2C-45%2E968170166015625%29%3B%29%3Bout%20body%3B%3E%3Bout%20skel%3B',
+		dataSource: getUrl(sources[0].bounds),
 		get: 'elements',
 		dataType: 'json',
 		dataRef: {
@@ -96,7 +77,13 @@
 				name: 'amenity',
 				sourceRef: 'tags.amenity',
 				type: 'multiple-select',
-				title: 'Amenity'
+				title: 'Tipo'
+			},
+			{
+				name: 'shop',
+				sourceRef: 'tags.shop',
+				type: 'multiple-select',
+				title: 'Loja'
 			},
 			{
 				name: 'source',
@@ -110,7 +97,7 @@
 		},
 		labels: {
 			title: 'BikeLivre',
-			subtitle: '<strong>Código Urbano</strong>',
+			subtitle: '<strong>Equipamentos para o ciclismo urbano</strong>',
 			filters: 'Filtros',
 			results: 'Resultados',
 			clear_search: 'Limpar busca',
