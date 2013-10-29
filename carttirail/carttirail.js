@@ -6,6 +6,7 @@ var carttirail = {};
 
 	app.settings = {
 		dataRef: {},
+		dataType: 'jsonp',
 		map: {
 			tiles: 'http://tile.stamen.com/toner/{z}/{x}/{y}.png',
 			center: [0, 0],
@@ -83,7 +84,7 @@ var carttirail = {};
 				var opts = {
 					url: itemSource.url,
 					data: parameters,
-					dataType: 'jsonp',
+					dataType: config.dataType,
 					timeout: 8000, // 8 second timeout
 					success: function(data) {
 						for(key in itemSource.get) {
@@ -113,7 +114,7 @@ var carttirail = {};
 	app.closeItem = function() {
 		fragment.rm('p');
 		$('#single-page').hide();
-		app.map.setView(config.map.center, config.map.zoom);
+		app.map.fitBounds(app.markers.getBounds());
 	}
 
 	app.filter = function(options) {
@@ -198,7 +199,7 @@ var carttirail = {};
 
 			var opts = {
 				url: config.dataSource,
-				dataType: 'jsonp',
+				dataType: 'json',
 				timeout: 8000, // 8 second timeout
 				success: display,
 				error: function() {
@@ -331,7 +332,10 @@ var carttirail = {};
 				});
 				app.markers.addLayer(marker);
 			}
-		});	
+		});
+
+		map.fitBounds(app.markers.getBounds());
+
 	}
 
 	var _filters = function() {

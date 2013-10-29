@@ -72,11 +72,13 @@
 		}
 
 	var config = {
-		data: data.features,
+		dataSource: 'http://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%3B%28node%5B%22amenity%22%3D%22bicycle_parking%22%5D%28-24%2E122941926913096%2C-47%2E05169677734375%2C-23%2E202223033350386%2C-45%2E968170166015625%29%3Bnode%5B%22shop%22%3D%22bicycle%22%5D%28-24%2E122941926913096%2C-47%2E05169677734375%2C-23%2E202223033350386%2C-45%2E968170166015625%29%3Bnode%5B%22amenity%22%3D%22bicycle_rental%22%5D%28-24%2E122941926913096%2C-47%2E05169677734375%2C-23%2E202223033350386%2C-45%2E968170166015625%29%3B%29%3Bout%20body%3B%3E%3Bout%20skel%3B',
+		get: 'elements',
+		dataType: 'json',
 		dataRef: {
 			id: 'id',
-			lat: 'geometry.coordinates[1]',
-			lng: 'geometry.coordinates[0]'
+			lat: 'lat',
+			lng: 'lon'
 		},
 		map: {
 			markers: {
@@ -86,19 +88,25 @@
 		filters: [
 			{
 				name: 's',
-				sourceRef: 'properties.name',
+				sourceRef: 'tags.name',
 				type: 'text',
 				title: 'Busca por nome'
 			},
 			{
 				name: 'amenity',
-				sourceRef: 'properties.amenity',
+				sourceRef: 'tags.amenity',
 				type: 'multiple-select',
 				title: 'Amenity'
+			},
+			{
+				name: 'source',
+				sourceRef: 'tags.source',
+				type: 'multiple-select',
+				title: 'Source'
 			}
 		],
 		templates: {
-			list: '<p class="category"><%= item.properties.amenity %></p><h3><%= item.properties.name %></h3>'
+			list: '<p class="category"><%= item.tags.amenity %></p><h3><%= item.tags.name %></h3>'
 		},
 		labels: {
 			title: 'Bike OSM',
