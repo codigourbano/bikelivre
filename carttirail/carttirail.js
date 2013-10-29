@@ -450,9 +450,13 @@ var carttirail = {};
 
 				}
 
-				_.each(filterVals, function(val, i) { 
-					$select.append('<option value="' + _.keys(val)[0] + '">' + val[_.keys(val)[0]] + '</option><% }); %>');
-				});
+				if(filterVals.length) {
+					_.each(filterVals, function(val, i) { 
+						$select.append('<option value="' + _.keys(val)[0] + '">' + val[_.keys(val)[0]] + '</option><% }); %>');
+					});
+				} else {
+					$select.remove();
+				}
 
 			}
 

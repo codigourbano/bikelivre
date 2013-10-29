@@ -63,7 +63,21 @@
 		},
 		map: {
 			markers: {
-				cluster: true
+				cluster: true,
+				icons: [
+					{
+						iconUrl: '',
+						iconSize: [32,32],
+						iconAnchor: [16,16],
+						popupAnchor: [0,-5],
+						ref: [ /* CARTTIRAIL TODO */
+							{
+								key: 'tags.amenity',
+								value: 'bicycle_rental'
+							}
+						]
+					}
+				]
 			}
 		},
 		filters: [
@@ -77,7 +91,10 @@
 				name: 'amenity',
 				sourceRef: 'tags.amenity',
 				type: 'multiple-select',
-				title: 'Tipo'
+				title: 'Tipo',
+				labels: { /* CARTTIRAIL TODO */
+					bicycle_rental: 'Aluguel de bicicletas'
+				}
 			},
 			{
 				name: 'shop',
