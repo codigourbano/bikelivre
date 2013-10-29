@@ -106,11 +106,11 @@
 			}
 		],
 		templates: {
-			list: '<p class="category"><%= item.tags.amenity %></p><h3><%= item.tags.name %></h3>'
+			list: '<p class="category"><% if(item.tags.amenity) { %><%= item.tags.amenity %><% } else { %>Bicicletário<% } %></p><h3><% if(item.tags.name) { %><%= item.tags.name %><% } else { %>Sem nome<% } %></h3>'
 		},
 		labels: {
-			title: 'Bike OSM',
-			subtitle: '<strong>Open Street Map Bike Data</strong>',
+			title: 'BikeLivre',
+			subtitle: '<strong>Código Urbano</strong>',
 			filters: 'Filtros',
 			results: 'Resultados',
 			clear_search: 'Limpar busca',
