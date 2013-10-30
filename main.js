@@ -62,18 +62,55 @@
 			lng: 'lon'
 		},
 		map: {
+			tiles: 'http://{s}.tiles.mapbox.com/v3/tmcw.map-7s15q36b/{z}/{x}/{y}.png',
 			markers: {
-				cluster: true,
+				cluster: false,
 				icons: [
 					{
-						iconUrl: '',
-						iconSize: [32,32],
-						iconAnchor: [16,16],
-						popupAnchor: [0,-5],
+						iconUrl: 'icons/bicycle-24.png',
+						iconSize: [24,24],
+						iconAnchor: [12,12],
+						popupAnchor: [0,-12],
 						ref: [ /* CARTTIRAIL TODO */
 							{
 								key: 'tags.amenity',
 								value: 'bicycle_rental'
+							}
+						]
+					},
+					{
+						iconUrl: 'icons/parking-24.png',
+						iconSize: [24,24],
+						iconAnchor: [12,12],
+						popupAnchor: [0,-12],
+						ref: [ /* CARTTIRAIL TODO */
+							{
+								key: 'tags.amenity',
+								value: 'bicycle_parking'
+							}
+						]
+					},
+					{
+						iconUrl: 'icons/bar-24.png',
+						iconSize: [24,24],
+						iconAnchor: [12,12],
+						popupAnchor: [0,-12],
+						ref: [ /* CARTTIRAIL TODO */
+							{
+								key: 'tags.amenity',
+								value: 'bar'
+							}
+						]
+					},
+					{
+						iconUrl: 'icons/circle-stroked-24.png',
+						iconSize: [24,24],
+						iconAnchor: [12,12],
+						popupAnchor: [0,-12],
+						ref: [ /* CARTTIRAIL TODO */
+							{
+								key: 'tags.amenity',
+								value: null
 							}
 						]
 					}
@@ -92,8 +129,10 @@
 				sourceRef: 'tags.amenity',
 				type: 'multiple-select',
 				title: 'Tipo',
-				labels: { /* CARTTIRAIL TODO */
-					bicycle_rental: 'Aluguel de bicicletas'
+				labels: {
+					bicycle_parking: 'Bicicletário',
+					bicycle_rental: 'Aluguel de bicicletas',
+					bar: 'Bar'
 				}
 			},
 			{
@@ -110,7 +149,7 @@
 			}
 		],
 		templates: {
-			list: '<p class="category"><% if(item.tags.amenity) { %><%= item.tags.amenity %><% } else { %>Bicicletário<% } %></p><h3><% if(item.tags.name) { %><%= item.tags.name %><% } else { %>Sem nome<% } %></h3>'
+			list: '<% if(item.tags.amenity) { %><p class="category"><%= item.tags.amenity %></p><% } %><h3><% if(item.tags.name) { %><%= item.tags.name %><% } else { %>Sem nome<% } %></h3>'
 		},
 		labels: {
 			title: 'BikeLivre',
