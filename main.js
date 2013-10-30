@@ -71,7 +71,7 @@
 						iconSize: [24,24],
 						iconAnchor: [12,12],
 						popupAnchor: [0,-12],
-						ref: [ /* CARTTIRAIL TODO */
+						ref: [
 							{
 								key: 'tags.amenity',
 								value: 'bicycle_rental'
@@ -83,7 +83,7 @@
 						iconSize: [24,24],
 						iconAnchor: [12,12],
 						popupAnchor: [0,-12],
-						ref: [ /* CARTTIRAIL TODO */
+						ref: [
 							{
 								key: 'tags.amenity',
 								value: 'bicycle_parking'
@@ -95,10 +95,22 @@
 						iconSize: [24,24],
 						iconAnchor: [12,12],
 						popupAnchor: [0,-12],
-						ref: [ /* CARTTIRAIL TODO */
+						ref: [
 							{
 								key: 'tags.amenity',
 								value: 'bar'
+							}
+						]
+					},
+					{
+						iconUrl: 'icons/shop-24.png',
+						iconSize: [24,24],
+						iconAnchor: [12,12],
+						popupAnchor: [0,-12],
+						ref: [
+							{
+								key: 'tags.shop',
+								value: 'bicycle'
 							}
 						]
 					},
@@ -107,7 +119,7 @@
 						iconSize: [24,24],
 						iconAnchor: [12,12],
 						popupAnchor: [0,-12],
-						ref: [ /* CARTTIRAIL TODO */
+						ref: [
 							{
 								key: 'tags.amenity',
 								value: null
@@ -136,16 +148,24 @@
 				}
 			},
 			{
-				name: 'shop',
+				name: 'store',
 				sourceRef: 'tags.shop',
-				type: 'multiple-select',
-				title: 'Loja'
+				type: 'true-false',
+				title: 'Loja de bicicleta',
+				value: 'bicycle',
+			},
+			{
+				name: 'repair',
+				sourceRef: 'tags["service:bicycle:repair"]',
+				type: 'true-false',
+				title: 'Manutenção',
+				value: 'yes'
 			},
 			{
 				name: 'source',
 				sourceRef: 'tags.source',
 				type: 'multiple-select',
-				title: 'Source'
+				title: 'Fonte'
 			}
 		],
 		templates: {
