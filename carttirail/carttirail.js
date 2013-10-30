@@ -120,7 +120,9 @@ var carttirail = {};
 
 	app.filter = function(options) {
 
-		var filteredData = _.extend(app.data, []);
+		var data = _.extend(app.data, []);
+
+		var datas = [];
 
 		_.each(config.filters, function(filter, i) {
 
@@ -130,18 +132,25 @@ var carttirail = {};
 				filtering = options[filter.name];
 			}
 
-			var dataToFilter = filteredData;
+			var dataToFilter;
+
+			if(filter.relation == 'OR')
+				dataToFilter = _.extend(app.data, []);
+			else
+				dataToFilter = data;
 
 			if(filtering) {
 
 				var fragmentData = {};
 
+				var result = false;
+
 				if(typeof filtering === 'string') {
 
-					filteredData = _.filter(dataToFilter, function(item) {
+					var result = _.filter(dataToFilter, function(item) {
 						if(eval('item.' + filter.sourceRef))
-							return eval('item.' + filter.sourceRef).toLowerCase().indexOf(filtering.toLowerCase()) != -1; }
-						);
+							return eval('item.' + filter.sourceRef).toLowerCase().indexOf(filtering.toLowerCase()) != -1;
+					});
 
 					fragmentData[filter.name] = filtering;
 
@@ -155,7 +164,8 @@ var carttirail = {};
 
 					});
 
-					filteredData = _.flatten(optionsFiltered);
+					var result = _.flatten(optionsFiltered);
+
 					fragmentData[filter.name] = filtering.join('|');
 
 				}
@@ -168,14 +178,34 @@ var carttirail = {};
 
 			}
 
+			if(result)
+				datas.push(result);
+
+		});
+
+		data = _.flatten(datas);
+
+		if(!data.length && (!(options instanceof Option) || !options.length)) {
+			data = _.extend(app.data, []);
+		}
+
+		/*
+		 * Disabled by default
+		 */
+
+		_.each(config.filters, function(filter, i) {
+
+			var filtering = false;
+
+			if(options instanceof Object) {
+				filtering = options[filter.name];
+			}
+
 			if(filter.disabledByDefault && filter.type == 'toggle' && !filtering) {
 
-				filteredData = _.filter(dataToFilter, function(item) {
+				data = _.filter(data, function(item) {
 
-					if(eval('item.' + filter.sourceRef))
-						return eval('item.' + filter.sourceRef).indexOf(filter.value) === -1;
-					else
-						return item;
+					return eval('item.' + filter.sourceRef) !== filter.value;
 
 				});
 
@@ -185,16 +215,16 @@ var carttirail = {};
 
 		// prevent duplicates
 		var unique = {};
-		_.each(filteredData, function(item, i) {
+		_.each(data, function(item, i) {
 			unique[item.id] = item;
 		});
-		filteredData = [];
+		data = [];
 		for(key in unique) {
-			filteredData.push(unique[key]);
+			data.push(unique[key]);
 		}
 
-		_markers(filteredData);
-		_itemListUpdate(filteredData);
+		_markers(data);
+		_itemListUpdate(data);
 	}
 
 	var _init = function() {

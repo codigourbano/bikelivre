@@ -153,12 +153,6 @@
 		},
 		filters: [
 			{
-				name: 's',
-				sourceRef: 'tags.name',
-				type: 'text',
-				title: 'Busca por nome'
-			},
-			{
 				name: 'rent',
 				sourceRef: 'tags.amenity',
 				type: 'toggle',
