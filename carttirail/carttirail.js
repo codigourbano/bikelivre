@@ -141,6 +141,9 @@ var carttirail = {};
 					fragment.set(fragmentData);
 				} else {
 					fragment.rm(filter.name);
+					if(filter.disabledByDefault && filter.type == 'toggle') {
+						filteredData = _.filter(filteredData, function(item) { if(eval('item.' + filter.sourceRef)) return eval('item.' + filter.sourceRef).indexOf(filter.value) === -1; else return item; });
+					}
 				}
 			} else {
 				fragment.rm(filter.name);
@@ -288,6 +291,8 @@ var carttirail = {};
 		}
 
 		_markers(data);
+		map.fitBounds(app.markers.getBounds());
+
 	}
 
 	var _markers = function(items) {
@@ -348,8 +353,6 @@ var carttirail = {};
 			}
 		});
 
-		map.fitBounds(app.markers.getBounds());
-
 	}
 
 	var _filters = function() {
@@ -398,7 +401,11 @@ var carttirail = {};
 					app.filter(filtering);
 				});
 
-			} else if(filter.type == 'true-false') {
+			} else if(filter.type == 'checkbox') {
+
+
+
+			} else if(filter.type == 'toggle') {
 
 				var value = (typeof filter.value !== 'undefined') ? filter.value : 1;
 
@@ -416,6 +423,7 @@ var carttirail = {};
 				});
 
 			}
+
 		});
 
 		// populate filter

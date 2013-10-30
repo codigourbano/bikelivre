@@ -4,8 +4,8 @@
 		{
 			'name': 'São Paulo',
 			'bounds': {
-				'north': -23.3569984436035,
 				'south': -24.0070018768311,
+				'north': -23.3569984436035,
 				'west': -46.826000213623,
 				'east': -46.3649978637695
 			}
@@ -13,8 +13,8 @@
 		{
 			'name': 'Porto Alegre',
 			'bounds': {
-				'north': -29.9306144714355,
 				'south': -30.2694511413574,
+				'north': -29.9306144714355,
 				'west': -51.3032264709473,
 				'east': -51.0119972229004
 			}
@@ -22,10 +22,19 @@
 		{
 			'name': 'Belo Horizonte',
 			'bounds': {
-				'north': -19.7769985198975,
 				'south': -20.0590000152588,
+				'north': -19.7769985198975,
 				'west': -44.0613059997559,
 				'east': -43.8569984436035
+			}
+		},
+		{
+			'name': 'New York',
+			'bounds': {
+				'south': 40.4773979187012,
+				'north': 40.9175796508789,
+				'west': -74.2590942382812,
+				'east': -73.7001647949219
 			}
 		}
 	];
@@ -33,6 +42,7 @@
 	var nodes = [
 		'"amenity"="bicycle_parking"',
 		'"amenity"="bicycle_rental"',
+		'"amenity"="fuel"',
 		'"shop"="bicycle"'
 	];
 
@@ -66,6 +76,18 @@
 			markers: {
 				cluster: false,
 				icons: [
+					{
+						iconUrl: 'icons/fuel-12.png',
+						iconSize: [12,12],
+						iconAnchor: [6,6],
+						popupAnchor: [0,-6],
+						ref: [
+							{
+								key: 'tags.amenity',
+								value: 'fuel'
+							}
+						]
+					},
 					{
 						iconUrl: 'icons/bicycle-24.png',
 						iconSize: [24,24],
@@ -145,27 +167,36 @@
 					bicycle_parking: 'Bicicletário',
 					bicycle_rental: 'Aluguel de bicicletas',
 					bar: 'Bar'
-				}
+				},
+				exclude: ['fuel']
 			},
 			{
 				name: 'store',
 				sourceRef: 'tags.shop',
-				type: 'true-false',
-				title: 'Loja de bicicleta',
+				type: 'toggle',
+				title: 'Lojas de bicicleta',
 				value: 'bicycle',
 			},
 			{
 				name: 'repair',
 				sourceRef: 'tags["service:bicycle:repair"]',
-				type: 'true-false',
+				type: 'toggle',
 				title: 'Manutenção',
 				value: 'yes'
+			},
+			{
+				name: 'fuel',
+				sourceRef: 'tags.amenity',
+				type: 'toggle',
+				title: 'Postos de gasolina',
+				value: 'fuel',
+				disabledByDefault: true
 			},
 			{
 				name: 'source',
 				sourceRef: 'tags.source',
 				type: 'multiple-select',
-				title: 'Fonte'
+				title: 'Fonte',
 			}
 		],
 		templates: {
