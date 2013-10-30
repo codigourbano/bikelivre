@@ -191,12 +191,6 @@
 				title: 'Postos de gasolina',
 				value: 'fuel',
 				disabledByDefault: true
-			},
-			{
-				name: 'source',
-				sourceRef: 'tags.source',
-				type: 'multiple-select',
-				title: 'Fonte',
 			}
 		],
 		templates: {

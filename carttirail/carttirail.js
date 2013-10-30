@@ -496,6 +496,7 @@ var carttirail = {};
 						$select.append('<option value="' + _.keys(val)[0] + '">' + val[_.keys(val)[0]] + '</option>');
 					});
 				} else {
+					alert('hi');
 					$select.parents('.filter').remove();
 				}
 
