@@ -296,16 +296,23 @@ h1,h2,h3,h4 {
 	background: #f0f0f0;
 	border-left: 10px solid #000;
 	overflow: hidden;
+	height: 100%;
 }
 
 #carttirail-content .inner {
 	padding: 20px;
+	height: 100%;
 }
 
 #carttirail-content h3 {
 	text-transform: uppercase;
 	font-weight: 200;
 	margin: 0 0 20px;
+}
+
+#carttirail-content #filters {
+	max-height: 50%;
+	overflow: auto;
 }
 
 #carttirail-content #filters h4 {

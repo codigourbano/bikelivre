@@ -1,0 +1,8 @@
+.filter label img {
+	float: left;
+	margin-right: 5px;
+}
+
+.filter label {
+	line-height: 24px;
+}

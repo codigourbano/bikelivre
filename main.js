@@ -159,38 +159,37 @@
 				title: 'Busca por nome'
 			},
 			{
-				name: 'amenity',
+				name: 'rent',
 				sourceRef: 'tags.amenity',
-				type: 'multiple-select',
-				title: 'Tipo',
-				labels: {
-					bicycle_parking: 'Bicicletário',
-					bicycle_rental: 'Aluguel de bicicletas',
-					bar: 'Bar'
-				},
-				exclude: ['fuel']
+				type: 'toggle',
+				title: '<img src="icons/bicycle-24.png" /> Aluguel de bicicletas',
+				value: 'bicycle_rental',
+				relation: 'OR'
+			},
+			{
+				name: 'parking',
+				sourceRef: 'tags.amenity',
+				type: 'toggle',
+				title: '<img src="icons/parking-24.png" /> Bicicletários',
+				value: 'bicycle_parking',
+				relation: 'OR'
 			},
 			{
 				name: 'store',
 				sourceRef: 'tags.shop',
 				type: 'toggle',
-				title: 'Lojas de bicicleta',
+				title: '<img src="icons/shop-24.png" /> Bicletarias',
 				value: 'bicycle',
-			},
-			{
-				name: 'repair',
-				sourceRef: 'tags["service:bicycle:repair"]',
-				type: 'toggle',
-				title: 'Manutenção',
-				value: 'yes'
+				relation: 'OR'
 			},
 			{
 				name: 'fuel',
 				sourceRef: 'tags.amenity',
 				type: 'toggle',
-				title: 'Postos de gasolina',
+				title: '<img src="icons/fuel-24.png" /> Postos de gasolina',
 				value: 'fuel',
-				disabledByDefault: true
+				disabledByDefault: true,
+				relation: 'OR'
 			}
 		],
 		templates: {
