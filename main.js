@@ -187,7 +187,28 @@
 			}
 		],
 		templates: {
-			list: '<% if(item.tags.amenity) { %><p class="category"><%= item.tags.amenity %></p><% } %><h3><% if(item.tags.name) { %><%= item.tags.name %><% } else { %>Sem nome<% } %></h3>'
+			list: '<% if(item.tags.amenity == "bicycle_rental") { %>' + 
+			        '<p class="category">Estação de empréstimo</p>' +
+			      '<% } %>'+
+			      '<% if(item.tags.shop) { %>' + 
+      			  '<p class="category">Loja ou bicicletaria</p>' +
+      			'<% } %>'+
+            '<% if(item.tags.amenity == "bicycle_parking") { %>' + 
+              '<p class="category">Bicicletário</p>' +
+            '<% } %>'+
+			      '<h3>'+
+			      '<% if(item.tags.name) { %>'+
+			        '<%= item.tags.name %>'+
+			      '<% } else { %>' + 
+			        'Sem nome<% } %>'+
+			      '</h3>'+
+			      '<a href="http://www.openstreetmap.org/edit?editor=id&lat='+
+              '<%= item.lat %>'+
+			        '&lon='+          
+              '<%= item.lon %>'+			            
+			        '&zoom=22" target="_blank">' +
+			        'editar'+
+			      '</a>'
 		},
 		labels: {
 			title: 'BikeLivre',
