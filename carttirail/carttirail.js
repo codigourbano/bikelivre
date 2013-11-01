@@ -7,6 +7,7 @@ var carttirail = {};
 	app.settings = {
 		dataRef: {},
 		dataType: 'jsonp',
+		timeOut: 8000,
 		map: {
 			tiles: 'http://tile.stamen.com/toner/{z}/{x}/{y}.png',
 			center: [0, 0],
@@ -22,7 +23,8 @@ var carttirail = {};
 			loading: {
 				first: 'Loading data...',
 				item: 'Loading item...',
-				error: 'Oops, something\'s wrong with the data server. Try again.'
+				error: 'Oops, something\'s wrong with the data server. Try again.',
+				not_found: 'We couldn\'t find any data'
 			}
 		},
 		templates: {}
@@ -33,12 +35,18 @@ var carttirail = {};
 			config.map = _.extend(app.settings.map, config.map);
 		}
 		if(config.labels) {
+
+			config.labels.loading = config.labels.loading ? config.labels.loading : {};
+
+			config.labels.loading = _.extend(app.settings.labels.loading, config.labels.loading);
+
 			config.labels = _.extend(app.settings.labels, config.labels);
 		}
 		return config;
 	};
 
 	var config;
+
 	app.init = function(containerID, userConf) {
 		app.containerID = containerID;
 		config = _.extend(app.settings, parseConfig(userConf));
@@ -49,13 +57,14 @@ var carttirail = {};
 				_init(containerID);
 			});
 		}
+		return app;
 	};
 
 	app._data = {};
 
 	app.openItem = function(id) {
 
-		fragment.set({'p': id});
+		app.fragment.set({'p': id});
 
 		var $container = app.$.page.find('.content');
 
@@ -86,7 +95,7 @@ var carttirail = {};
 					url: itemSource.url,
 					data: parameters,
 					dataType: config.dataType,
-					timeout: 8000, // 8 second timeout
+					timeout: config.timeOut, // 8 second timeout
 					success: function(data) {
 						for(key in itemSource.get) {
 							item[key] = data[key];
@@ -113,7 +122,7 @@ var carttirail = {};
 	}
 
 	app.closeItem = function() {
-		fragment.rm('p');
+		app.fragment.rm('p');
 		$('#single-page').hide();
 		app.map.fitBounds(app.map.previousLocation);
 	}
@@ -170,11 +179,11 @@ var carttirail = {};
 
 				}
 
-				fragment.set(fragmentData);
+				app.fragment.set(fragmentData);
 
 			} else {
 
-				fragment.rm(filter.name);
+				app.fragment.rm(filter.name);
 
 			}
 
@@ -269,8 +278,9 @@ var carttirail = {};
 				dataType: 'json',
 				timeout: 8000, // 8 second timeout
 				success: display,
-				error: function() {
-					app.$.loading.text(config.labels.loading.error);
+				error: function(e) {
+					console.log(e);
+					app.$.loading.text(e.statusText + ' - ' + config.labels.loading.error);
 				}
 			};
 
@@ -282,37 +292,47 @@ var carttirail = {};
 		}
 
 		function display(data) {
+
 			if(!data) {
 
-				$('#loading').text(config.labels.loading.error);
+				$('#loading').text(config.labels.loading.not_found);
 
 			} else {
 
-				$('body').removeClass('loading');
-				app.$.content = $('<div id="carttirail-content"><div class="inner"></div></div>');
-				app.$.append(app.$.content);
-
 				// get specific node from json if specified
 				if(config.get) {
-					data = data[config.get];
-				}
-				// create ids if undefined
-				if(!config.dataRef.id) {
-					_.each(data, function(item, i) { data[i].id = 'item-' + i; });
+					data = eval('data.' + config.get);
 				}
 
-				app.data = data; // store data
+				if(!data || !data.length) {
 
-				_map(data);
+					$('#loading').text(config.labels.loading.not_found);
 
-				_filters();
-				_itemList(data);
+				} else {
+
+					$('body').removeClass('loading');
+					app.$.content = $('<div id="carttirail-content"><div class="inner"></div></div>');
+					app.$.append(app.$.content);
+
+					// create ids if undefined
+					if(!config.dataRef.id) {
+						_.each(data, function(item, i) { data[i].id = 'item-' + i; });
+					}
+
+					app.data = data; // store data
+
+					_map(data);
+
+					_filters();
+					_itemList(data);
 
 
-				app.$.loading.hide();
+					app.$.loading.hide();
 
-				_readFragments();
-				appDimensions();
+					_readFragments();
+					appDimensions();
+
+				}
 
 			}
 		}
@@ -328,7 +348,7 @@ var carttirail = {};
 		app.$.append(app.$.map);
 
 		var map = app.map = L.map('carttirail-map');
-		if(!fragment.get('p'))
+		if(!app.fragment.get('p'))
 			map.setView(config.map.center, config.map.zoom);
 		L.tileLayer(config.map.tiles, {
 			maxZoom: config.map.maxZoom
@@ -729,15 +749,15 @@ var carttirail = {};
 		return f;
 	};
 
-	var fragment = _fragment();
+	app.fragment = _fragment();
 
 	var _readFragments = function() {
 
 		if(config.filters) {
 			var filtering = app.filteringVals;
 			_.each(config.filters, function(filter, i) {
-				if(fragment.get(filter.name)) {
-					var val = fragment.get(filter.name);
+				if(app.fragment.get(filter.name)) {
+					var val = app.fragment.get(filter.name);
 					if(val.indexOf('|') != -1)
 						val = val.split('|');
 					var $input = $('.filter #' + filter.name);
@@ -753,8 +773,8 @@ var carttirail = {};
 			});
 		}
 
-		if(fragment.get('p')) {
-			app.openItem(fragment.get('p'));
+		if(app.fragment.get('p')) {
+			app.openItem(app.fragment.get('p'));
 		}
 
 		app.filter(filtering);

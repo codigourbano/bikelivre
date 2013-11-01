@@ -6,3 +6,46 @@
 .filter label {
 	line-height: 24px;
 }
+
+.city-search {
+	float: right;
+	padding: 30px 20px;
+	width: 30%;
+	position: relative;
+	box-sizing: border-box;
+}
+
+.city-search input[type=text] {
+	display: block;
+	width: 100%;
+	padding: 0 10px;
+	height: 40px;
+	box-sizing: border-box;
+	border: 0;
+}
+
+.city-search .city-results {
+	position: absolute;
+	top: 70px;
+	left: 20px;
+	right: 20px;
+	background: #fff;
+}
+
+.city-search .city-results ul {
+	margin: 0;
+	padding: 0;
+}
+
+.city-search .city-results li {
+	cursor: pointer;
+	padding: 10px;
+	border-bottom: 1px solid #eee;
+	margin: 0;
+	font-size: 11px;
+}
+
+.city-search .city-results li strong {
+	display: block;
+	font-size: 14px;
+}

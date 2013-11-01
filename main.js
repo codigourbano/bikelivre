@@ -36,6 +36,15 @@
 				'west': -74.2590942382812,
 				'east': -73.7001647949219
 			}
+		},
+		{
+			'name': 'Ubatuba',
+			'bounds': {
+				'south': -23.5970001220703,
+				'north': -23.1979999542236,
+				'west': -45.2800025939941,
+				'east': -44.723747253418
+			}
 		}
 	];
 
@@ -62,10 +71,49 @@
 
 	}
 
+	function unserialize(query) {
+		var pair, params = {};
+		query = query.replace(/^\?/, '').split(/&/);
+		for (pair in query) {
+			pair = query[pair].split('=');
+			params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+		}
+		return params;
+	}
+
+	function dataSource() {
+
+		var dataSource = getUrl(sources[0].bounds);
+
+		if(window.location.search) {
+
+			var bounds = unserialize(window.location.search.replace('?', ''));
+
+			if(typeof bounds !== 'undefined' && bounds instanceof Object) {
+
+				bounds = bounds.location.split('|');
+
+				bounds = {
+					south: bounds[0],
+					north: bounds[1],
+					west: bounds[2],
+					east: bounds[3]
+				}
+
+				dataSource = getUrl(bounds);
+
+			}
+		}
+
+		return dataSource;
+
+	}
+
 	var config = {
-		dataSource: getUrl(sources[0].bounds),
+		dataSource: dataSource(),
 		get: 'elements',
 		dataType: 'json',
+		timeOut: 20000,
 		dataRef: {
 			id: 'id',
 			lat: 'lat',
@@ -205,6 +253,85 @@
 		}
 	}
 
-	carttirail.init('app', config);
+	$(document).ready(function() {
+
+		var app = carttirail.init('app', config);
+
+		var $citySearch = $('<div class="city-search"><form><input type="text" class="city_search" name="city" placeholder="Encontre sua cidade" autocomplete="off" /><input type="hidden" name="location" class="location" /></form></div>');
+
+		var $results = $('<div class="city-results" />');
+
+		$citySearch.append($results);
+
+		app.$.header.append($citySearch);
+
+		var results = _.debounce(function(input) {
+
+			if(!input.val() || !input.is(':focus'))
+				return false;
+
+			$.get('http://nominatim.openstreetmap.org/search.php?city=' + input.val() + '&format=json', function(data) {
+
+				if(data) {
+
+					$results.show();
+
+					$results.empty();
+
+					$results.append('<ul />');
+
+					_.each(data, function(city, i) {
+
+						var nice_name = city.display_name.split(',')[0];
+						var rest_name = city.display_name.replace(nice_name + ', ', '');
+
+						var $item = $('<li><strong>' + nice_name + '</strong>' + rest_name + '</li>');
+
+						$item.data('boundingbox', city.boundingbox);
+
+						$results.find('ul').append($item);
+
+					});
+
+
+				}
+
+			}, 'json');
+
+		}, 200);
+
+		$citySearch.find('.city_search').bind('keyup', function(e) {
+
+			if(e.keyCode == 13)
+				return false;
+
+			if(e.keyCode == 27) {
+				$(this).trigger('blur');
+				return false;
+			}
+
+		});
+
+		$citySearch.find('.city_search').bind('keyup focus', function(e) {
+
+			results($(this));
+
+		});
+
+		$citySearch.find('.city_search').bind('blur', function() {
+			setTimeout(function() {
+				$results.hide();
+			}, 300);
+		});
+
+		$results.on('click', 'li', function() {
+
+			$citySearch.find('.location').val($(this).data('boundingbox').join('|'));
+
+			$citySearch.find('form').submit();
+
+		});
+
+	});
 
 })(jQuery);
